@@ -30,13 +30,23 @@ async function run() {
     // databases and collections
     const tasksCollection = client.db("swiftTaskDB").collection("tasks");
 
+    // get requests
+    app.get("/api/v1/user/get-tasks/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const filter = { $and: [{ userid: id }, { status: "todo" }] };
+
+      const result = await tasksCollection.find(filter).toArray();
+
+      res.send(result);
+    });
+
+    //post requests
     app.post("/api/v1/user/add-task", async (req, res) => {
       const info = req.body;
       const result = await tasksCollection.insertOne(info);
       res.send(result);
     });
-
-    
 
     await client.db("admin").command({ ping: 1 });
     console.log(
