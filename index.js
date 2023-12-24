@@ -67,6 +67,26 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/api/v1/user/update-task/:id", async (req, res) => {
+      const id = req.params.id;
+      const { task, description, deadline, priority } = req.body;
+      const updatedDoc = {
+        $set: {
+          task,
+          description,
+          deadline,
+          priority,
+        },
+      };
+
+      const result = await tasksCollection.updateOne(
+        { _id: new ObjectId(id) },
+        updatedDoc
+      );
+
+      res.send(result);
+    });
+
     //delete request
 
     app.delete("/api/v1/user/delete-task/:id", async (req, res) => {
